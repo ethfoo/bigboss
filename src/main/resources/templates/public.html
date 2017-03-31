@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            console.log("ready")
+            $("#divupload").hide()
+            $("#rdimgurl").click(function () {
+                $("#divimgurl").show()
+                $("#divupload").hide()
+            })
+            $("#rdupload").click(function () {
+                $("#divimgurl").hide()
+                $("#divupload").show()
+            })
+        })
+
+        function publicItem() {
+            console.log("publicItem")
+            var formData = new FormData();
+            formData.append("title", $("#title").val())
+            formData.append("info", $("#info").val())
+            formData.append("imageurl", $("#imageurl").val())
+            formData.append("content", $("#content").val())
+            formData.append("price", $("#price").val())
+            formData.append("file", document.getElementById("uploadfile").files[0])
+            formData.enctype = "multipart/form-data";
+
+            $.ajax({
+                url:"/publicItem",
+                type:"POST",
+                data:formData,
+                contentType:false,
+                processData:false,
+                success:function (data) {
+                    $("#result").html(data.msg)
+                },
+                error:function (data) {
+                    $("#result").html(data.msg)
+                }
+            })
+
+        }
+
+    </script>
+
+
+        <link rel="stylesheet" href="/style.css"/>
+
+</head>
+<body>
+<div id="header" class="n-head">
+    <div class="g-doc f-cb">
+        <div class="user">welcome, Seller
+            <a href="/logout">退出</a>
+        </div>
+        <div class="nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="/public">发布</a></li>
+        </div>
+    </div>
+</div>
+<div><h1>发布页面</h1></div>
+
+<div class="g-doc">
+    <div class="n-public">
+        <div class="m-form m-form-ht">
+            <div class="fmitem">
+                <label class="fmlab">标题：</label>
+                <div class="fmipt">
+                    <input class="u-ipt ipt" type="text" name="title" id="title"/>
+                </div>
+            </div>
+            <div class="fmitem">
+                <label class="fmlab">摘要：</label>
+                <div class="fmipt">
+                    <input class="u-ipt ipt" type="text" name="info" id="info"/>
+                </div>
+            </div>
+            <div class="fmitem">
+                <label class="fmlab">图片:</label>
+                <div class="fmipt">
+                    <input id="rdimgurl" type="radio" name="image" checked="checked"/>图片地址
+                    <input id="rdupload" type="radio" name="image"/>本地上传
+                </div>
+
+                <div id="divimgurl" class="fmipt">
+                    <input class="u-ipt ipt" type="text" name="imageurl" id="imageurl"/>
+                </div>
+                <div id="divupload" class="fmipt">
+                    选择文件:<input type="file" id="uploadfile"/>
+                </div>
+            </div>
+            <div class="fmitem">
+                <label class="fmlab">正文：</label>
+                <div class="fmipt">
+                    <input class="u-ipt ipt" type="text" name="content" id="content"/>
+                </div>
+            </div>
+            <div class="fmitem">
+                <label class="fmlab">价格：</label>
+                <div class="fmipt">
+                    <input class="u-ipt price" type="text" name="price" id="price"/><span>元</span>
+                </div>
+
+            </div>
+            <div class="fmipt">
+                <input class="u-btn u-btn-primary u-btn-lg" type="button" value="发布" onclick="publicItem()"/>
+            </div>
+
+            <div id="result"></div>
+
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+</body>
+
+
+
+
+</html>

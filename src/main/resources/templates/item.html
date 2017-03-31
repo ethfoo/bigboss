@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<head>
+    <link rel="stylesheet" href="/style.css"/>
+
+</head>
+
+<div id="header" class="n-head">
+    <div class="g-doc f-cb">
+        <div class="user">welcome, Buyer
+            <a href="/logout">退出</a>
+        </div>
+        <ul class="nav">
+            <li><a href="/">首页</a> </li>
+            <li><a href="/buyrecord">财务</a></li>
+            <li><a href="/shoppingcart">购物车</a></li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="g-doc">
+    <div><h1>商品展示页面</h1></div>
+    <div class="n-show f-cb">
+        <div class="img"><img src="" alt="图片"/></div>
+        <div class="cnt">
+            <h2 th:text="${item.title}">标题</h2>
+            <p class="summary" th:text="${item.info}">摘要文字</p>
+            <div class="num">购买数量：<input type="number" id="num" value="1"/></div>
+            <div th:switch="${user.usertype}">
+                <div th:case=" 'BUYER'">
+                    <div th:if="${isrecord}" class="oprt f-cb">
+                        <!--已购买-->
+                        <span class="buyprice" th:text="${'¥' + buyprice}">购买时的价格</span>
+                        <span class="b-btn u-btn-primary z-dis" th:text="已购买"></span>
+                    </div>
+                    <div th:unless="${isrecord}">
+                        <div class="price"><span class="v-unit">¥</span>
+                            <span class="v-value" th:text="${'¥' + item.price}">价格</span>
+                        </div>
+
+                        <input type="hidden" id="itemid" th:value="${item.id}" />
+                        <input class="b-btn u-btn-primary" type="button" value="加入购物车" onclick="addtocart()"/>
+                        <div id="result"></div>
+                    </div>
+
+                </div>
+                <div th:case=" 'SELLER'">
+                    <div class="price">
+                        <span class="v-unit">¥</span>
+                        <span class="v-value" th:text="${'¥' +item.price}">价格</span>
+                    </div>
+                    <div class="port f-cb"><input class="u-btn u-btn-primary" type="button" value="编辑"/></div>
+
+                </div>
+                <div th:case="'NOT_LOGGED_IN'">
+                    <h3 th:text="${'¥' + item.price}">价格</h3>
+                </div>
+
+            </div>
+            <div class="n-detail"><p th:text="${item.content}">全文</p> </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+</div>
+<script type="text/javascript">
+    function addtocart(){
+        $.ajax({
+            data:{
+                "itemid": $("#itemid").val(),
+                "num": $("#num").val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:"/addtocart",
+            error:function(data){
+                $("#result").html(data.msg)
+            },
+            success:function(data){
+                $("#result").html(data.msg) ;
+            }
+        });
+    }
+</script>
+
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js" />
+
+</body>
+
+</html>
